@@ -1,0 +1,17 @@
+{
+  "name": "portal-openuai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  },
+  "scripts": {
+  	"start" : "http-server -a localhost -p 8000 --cors"
+  }
+}

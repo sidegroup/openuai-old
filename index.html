@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!-- <link href="https://fonts.googleapis.com/css?family=Roboto|Material+Icons" rel="stylesheet"> -->
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Professores da UAI</h1>
+    </div>
+  </header>
+  <main>
+    <div class="container">
+    </div>
+  </main>
+  <script>
+    const mainElement = document.querySelector('main .container');
+    // TODO
+
+    function formatJSON(data){
+      let professors = {}
+      let hasInterestIn = {}
+      data.results.bindings.forEach((result) => {
+        if(result.p.value == "http://purl.org/dc/terms/title"){
+          hasInterestIn[result.s.value] = result.o.value
+        }
+      });
+      data.results.bindings.forEach((result) => {
+        if(professors[result.s.value] == null && result.s.value.includes("/openuai/professor")){
+          professors[result.s.value] = {};
+        }
+        if(result.p.value == "http://purl.org/dc/terms/identifier"){
+          professors[result.s.value]["idLattes"] = result.o.value;
+        }
+        if(result.p.value == "http://xmlns.com/foaf/0.1/name"){
+          professors[result.s.value]["name"] = result.o.value;
+        }
+        if(result.p.value == "http://side.vhost.ifpb.edu.br#lattesURL"){
+          professors[result.s.value]["lattesURL"] = result.o.value;
+        }
+        if(result.p.value == "http://side.vhost.ifpb.edu.br#hasInterestIn"){
+          if(professors[result.s.value]["KnowledgeArea"] == undefined)
+          professors[result.s.value]["KnowledgeArea"] = [];
+          else
+          professors[result.s.value]["KnowledgeArea"].push(hasInterestIn[result.o.value]);
+        }
+      });
+      return {
+        "professors": Object.values(professors)
+      }
+    }
+
+    // TODO CORS
+    // CONSTRUCT {
+    //      ?professor ?p ?o .
+    //      ?professor <http://side.vhost.ifpb.edu.br#hasInterestIn> ?interest .
+    //      ?interest <http://purl.org/dc/terms/title> ?objectInterest
+    // }
+    // FROM
+    //      <http://200.129.79.59/openuai>
+    // WHERE {
+    //      $professor ?p $o .
+    //      $professor <http://side.vhost.ifpb.edu.br#hasInterestIn> $interest .
+    //      $interest <http://purl.org/dc/terms/title> $objectInterest .
+    //      $professor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Professor>
+    // }
+    // http://200.129.79.59/sparql?
+    //   query=CONSTRUCT { ?professor ?p ?o . ?professor <http://side.vhost.ifpb.edu.br#hasInterestIn> ?interest . ?interest <http://purl.org/dc/terms/title> ?objectInterest } FROM <http://200.129.79.59/openuai> WHERE { $professor ?p $o . $professor <http://side.vhost.ifpb.edu.br#hasInterestIn> $interest . $interest <http://purl.org/dc/terms/title> $objectInterest . $professor <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Professor> }&
+    //   format=application/sparql-results+json
+    // let jsonFile = 'http://200.129.79.59/sparql?default-graph-uri=&query=CONSTRUCT+%7B%0D%0A+++++%3Fprofessor+%3Fp+%3Fo+.%0D%0A+++++%3Fprofessor+%3Chttp%3A%2F%2Fside.vhost.ifpb.edu.br%23hasInterestIn%3E+%3Finterest+.%0D%0A+++++%3Finterest+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2Ftitle%3E+%3FobjectInterest%0D%0A%7D%0D%0AFROM%0D%0A+++++%3Chttp%3A%2F%2F200.129.79.59%2Fopenuai%3E%0D%0AWHERE+%7B%0D%0A+++++%24professor+%3Fp+%24o+.%0D%0A+++++%24professor+%3Chttp%3A%2F%2Fside.vhost.ifpb.edu.br%23hasInterestIn%3E+%24interest+.%0D%0A+++++%24interest+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2Ftitle%3E+%24objectInterest+.%0D%0A+++++%24professor+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FProfessor%3E%0D%0A%7D&should-sponge=&format=application%2Fsparql-results%2Bjson&timeout=0&debug=on';
+    let jsonFile = 'data/portaluai.json';
+    fetch(jsonFile)
+    .then((response) => response.json())
+    .then((json) => {
+      json = formatJSON(json);
+      let professors = '';
+
+      json["professors"].forEach((object) => {
+        let name = object["name"];
+        let lattesURL = object["lattesURL"];
+        let knowledgeAreas = object["KnowledgeArea"].map((area) => area);
+        let image = "http://servicosweb.cnpq.br/wspessoa/servletrecuperafoto?tipo=1&id="+object["idLattes"];
+        knowledgeAreas = knowledgeAreas.join('</span><span>')
+        knowledgeAreas = `<span>${knowledgeAreas}</span>`;
+
+        professors += `<div class="professor">
+                        <div class="image-professor">
+                          <img src="${image}" alt="" width="100px"/>
+                        </div>
+                        <div class="info-professor">
+                          <h1>${name}</h1>
+                          <a href="${lattesURL}">${lattesURL}</a>
+                          <div class="knowledgeArea">
+                            <b>Áreas:</b> ${knowledgeAreas}
+                          </div>
+                        </div>
+                      </div>`;
+      });
+
+      mainElement.innerHTML = professors;
+    });
+  </script>
+</body>
+</html>

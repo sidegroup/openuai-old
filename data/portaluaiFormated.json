@@ -1,0 +1,15 @@
+{
+  "professors":
+  [
+    {
+      "name":"Damires Yluska de Souza Fernandes",
+      "lattesURL":"http://lattes.cnpq.br/9411293540915384",
+      "KnowledgeArea":["Banco de Dados", "Web Semântica"]
+    },
+    {
+      "name":"Crishane Azevedo Freire",
+      "lattesURL":"http://lattes.cnpq.br/0792579968024518",
+      "KnowledgeArea":["Metodologia e Técnicas da Computação"]
+    }
+  ]
+}

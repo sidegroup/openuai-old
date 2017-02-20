@@ -1,0 +1,52 @@
+@prefix openuai: <http://openuai.ifpb.edu.br/> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<#professor1>
+  a dbo:Professor ;
+  foaf:name "Damires Yluska de Souza Fernandes" ;
+  openuai:lattesURL "http://lattes.cnpq.br/9411293540915384" ;
+  openuai:KnowledgeArea <#subject12>, <#subjectN> ;
+  .
+
+<#professor2>
+  a dbo:Professor ;
+  foaf:name "Crishane Azevedo Freire" ;
+  openuai:lattesURL "http://lattes.cnpq.br/0792579968024518" ;
+  openuai:KnowledgeArea <#subject9> ;
+  .
+
+ <#knowledgearea1>
+ 	a openuai:KnowledgeArea ;
+ 	dcterms:identifier 10000003;
+ 	rdfs:label "Ciências Exatas e da Terra"@pt-BR ;
+  	.
+
+ <#subknowledgearea1>
+ 	a openuai:SubKnowledgeArea ;
+ 	dcterms:identifier 10300007;
+ 	openuai:KnowledgeArea <#KnowledgeArea1> ;
+ 	rdfs:label "Ciência da Computação"@pt-BR ;
+	.
+
+<#subject12>
+	a openuai:Subject ;
+  dcterms:identifier 10303030;
+	openuai:SubKnowledgeArea <#SubKnowledge1> ;
+	rdfs:label "Banco de Dados"@pt-BR ;
+  .
+
+<#subject9>
+  a openuai:Subject ;
+  dcterms:identifier 10303006;
+  openuai:SubKnowledgeArea <#SubKnowledge1> ;
+  rdfs:label "Metodologia e Técnicas da Computação"@pt-BR ;
+  .
+
+<#subjectN>
+	a openuai:Subject ;
+	openuai:SubKnowledgeArea <#SubKnowledge1> ;
+	rdfs:label "Web Semântica"@pt-BR ;
+  .
